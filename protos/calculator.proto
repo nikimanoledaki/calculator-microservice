@@ -1,0 +1,16 @@
+syntax = "proto3";
+option go_package = ".;calculator";
+
+service Calculator {
+    rpc GetComputation(ComputationRequest) returns (ComputationResponse) {}
+}
+
+message ComputationRequest {
+    string Operand = 1;
+    int32 FirstNumber = 2;
+    int32 SecondNumber = 3;
+}
+
+message ComputationResponse {
+    int32 Result = 1;
+}
