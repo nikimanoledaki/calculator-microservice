@@ -27,11 +27,24 @@ var _ = Describe("Integration", func() {
 		gexec.CleanupBuildArtifacts()
 	})
 
-	It("When the command line arguments are `sum 1 1`, it prints `2`", func() {
-		calculatorCommand = exec.Command(calculatorBinary, "sum 1 1")
-
+	It("If the command line arguments are `sum 1 1`, it prints `2`", func() {
+		calculatorCommand = exec.Command(calculatorBinary, "sum", "1", "1")
 		session, err := gexec.Start(calculatorCommand, GinkgoWriter, GinkgoWriter)
 		Expect(err).NotTo(HaveOccurred())
-		Eventually(session.Out).Should(gbytes.Say("2"))
+		Eventually(session.Out).Should(gbytes.Say("2\n"))
+	})
+
+	It("If the command line argument are `subtract 2 1`, it prints `1`", func() {
+		calculatorCommand = exec.Command(calculatorBinary, "subtract", "2", "1")
+		session, err := gexec.Start(calculatorCommand, GinkgoWriter, GinkgoWriter)
+		Expect(err).NotTo(HaveOccurred())
+		Eventually(session.Out).Should(gbytes.Say("1"))
+	})
+
+	It("If the operand is not recognized, it prints an error message", func() {
+		calculatorCommand = exec.Command(calculatorBinary, "unknown", "0", "0")
+		session, err := gexec.Start(calculatorCommand, GinkgoWriter, GinkgoWriter)
+		Expect(err).NotTo(HaveOccurred())
+		Eventually(session.Out).Should(gbytes.Say("operand could not be found"))
 	})
 })

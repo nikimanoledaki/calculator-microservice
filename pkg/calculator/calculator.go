@@ -1,6 +1,24 @@
 package calculator
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
+
+// Compute performs the arithmetic operation on two given numbers based on a given operand.
+func Compute(operand string, firstNumber, secondNumber int) (int, error) {
+	switch operand {
+	case "sum":
+		return Sum(firstNumber, secondNumber), nil
+	case "subtract":
+		return Subtract(firstNumber, secondNumber), nil
+	case "multiply":
+		return Multiply(firstNumber, secondNumber), nil
+	case "divide":
+		return Divide(firstNumber, secondNumber), nil
+	}
+	return 0, errors.New("operand could not be found\n")
+}
 
 // Sum returns the sum of two numbers.
 func Sum(firstNumber, secondNumber int) int {
