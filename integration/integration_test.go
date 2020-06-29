@@ -47,4 +47,11 @@ var _ = Describe("Integration", func() {
 		Expect(err).NotTo(HaveOccurred())
 		Eventually(session.Out).Should(gbytes.Say("operand could not be found"))
 	})
+
+	It("If the number of command line arguments is not 3, it prints an error message", func() {
+		calculatorCommand = exec.Command(calculatorBinary, "sum", "1", "2", "3")
+		session, err := gexec.Start(calculatorCommand, GinkgoWriter, GinkgoWriter)
+		Expect(err).NotTo(HaveOccurred())
+		Eventually(session.Out).Should(gbytes.Say("expected exactly 3 arguments"))
+	})
 })

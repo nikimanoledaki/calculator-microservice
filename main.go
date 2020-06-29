@@ -9,6 +9,10 @@ import (
 )
 
 func main() {
+	if len(os.Args) != 3 {
+		fmt.Println("expected exactly 3 arguments")
+	}
+
 	operand, firstNumberString, secondNumberString := os.Args[1], os.Args[2], os.Args[3]
 
 	firstNumber, _ := strconv.Atoi(firstNumberString)
