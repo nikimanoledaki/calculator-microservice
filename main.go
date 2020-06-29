@@ -9,20 +9,24 @@ import (
 )
 
 func main() {
-	if len(os.Args) != 3 {
-		fmt.Println("expected exactly 3 arguments")
+	if len(os.Args) != 4 {
+		fmt.Println("number of arguments is not valid")
 	}
 
-	operand, firstNumberString, secondNumberString := os.Args[1], os.Args[2], os.Args[3]
+	operand, numbersAsString := os.Args[1], os.Args[2:]
 
-	firstNumber, _ := strconv.Atoi(firstNumberString)
-	secondNumber, _ := strconv.Atoi(secondNumberString)
+	numbers := make([]int, len(numbersAsString))
+	for i, arg := range numbersAsString {
+		var err error
+		numbers[i], err = strconv.Atoi(arg)
+		if err != nil {
+			fmt.Println("last arguments must be numbers")
+		}
+	}
 
-	result, err := calculator.Compute(operand, firstNumber, secondNumber)
-
+	result, err := calculator.Compute(operand, numbers[0], numbers[1])
 	if err != nil {
 		fmt.Println(err)
 	}
-
 	fmt.Printf("%d\n", result)
 }

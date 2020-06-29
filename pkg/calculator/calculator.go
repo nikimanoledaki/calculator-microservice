@@ -17,7 +17,7 @@ func Compute(operand string, firstNumber, secondNumber int) (int, error) {
 	case "divide":
 		return Divide(firstNumber, secondNumber), nil
 	}
-	return 0, errors.New("operand could not be found\n")
+	return 0, errors.New("operand could not be found")
 }
 
 // Sum returns the sum of two numbers.
@@ -38,7 +38,7 @@ func Multiply(firstNumber, secondNumber int) int {
 // Divide  returns the quotient of two numbers.
 func Divide(firstNumber, secondNumber int) int {
 	if secondNumber == 0 {
-		fmt.Println("Number cannot be divided by zero.")
+		fmt.Println("number cannot be divided by zero")
 	}
 	return firstNumber / secondNumber
 }
