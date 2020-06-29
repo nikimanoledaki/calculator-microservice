@@ -4,7 +4,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	"github.com/nikimanoledaki/calculator-microservice"
+	"github.com/nikimanoledaki/calculator-microservice/pkg/calculator"
 )
 
 var _ = Describe("Calculator", func() {
