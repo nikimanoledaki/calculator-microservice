@@ -1,16 +1,16 @@
 # Calculator Microservice
 
-A simple microservice to do basic arithmetics.
+This is a simple microservice to do basic arithmetic operations. It has a gRPC client and server that implement two methods, one to add two `int32` values and one to find the average of two `float32` values. It has a CLI-based client that prints out the result of the calculations.
 
-# How to run the gRPC server and client
+## The gRPC server and client
 
-First run the server:
+The first step is to start the server.
 
 ```
 go run cmd/server/main.go
 ```
 
-Then build the client in another terminal:
+Then build the client in another terminal.
 
 ```
 go build -o client cmd/client/main.go
@@ -23,12 +23,66 @@ Now you can use the CLI client to find the sum or average of two numbers!
 ./client average 9.5 10
 ```
 
-# Running the tests
+## Testing
 
-The unit and integration tests are written with `Ginkgo` and `Gomega`.
+### Unit Tests
+
+Unit tests use the `Ginkgo`/`Gomega` dependecies and can be run with the following command if ginkgo is installed on your machine and can be found on your `$PATH`.
 
 ```
-ginkgo -r
+ginkgo -r pkg
 ```
 
-https://github.com/fullstorydev/grpcurl
+### grpcurl
+
+Also, [grpcurl](https://github.com/fullstorydev/grpcurl) is a very nice tool to do manual feature tests with sending and receiving requests. It was particularly useful while building the server, before there was a client to test that the server functioned properly.
+
+```
+$ grpcurl --plaintext -d '{"FirstNumber": 1, "SecondNumber": 5}' localhost:9092 Calculator.GetSum
+
+// Client view
+{
+  "Result": 6
+}
+
+// Server view
+2020-06-30T19:41:53.038+0100 [INFO]  Handle GetSum: firstNumber=1 secondNumber=5
+```
+
+```
+$ grpcurl --plaintext -d '{"FirstNumber": 1.0, "SecondNumber": 2.0}' localhost:9092 Calculator.GetAverage
+
+// Client view
+{
+  "Result": 1.5
+}
+
+// Server view
+2020-06-30T19:40:28.249+0100 [INFO]  Handle GetAverage: firstNumber=1 secondNumber=2
+```
+
+It is also pretty neat to get more information about specific methods and messages available in the gRPC interface.
+
+```
+$ grpcurl --plaintext localhost:9092 describe Calculator
+Calculator is a service:
+service Calculator {
+  rpc GetAverage ( .AverageRequest ) returns ( .AverageResponse );
+  rpc GetSum ( .SumRequest ) returns ( .SumResponse );
+}
+```
+
+```
+$ grpcurl --plaintext localhost:9092 describe Calculator.GetAverage
+Calculator.GetAverage is a method:
+rpc GetAverage ( .AverageRequest ) returns ( .AverageResponse );
+```
+
+```
+$ grpcurl --plaintext localhost:9092 describe .AverageRequest
+AverageRequest is a message:
+message AverageRequest {
+  float FirstNumber = 1;
+  float SecondNumber = 2;
+}
+```

@@ -12,20 +12,19 @@ import (
 
 // ParseArguments manages the error handling for the unhappy paths of the client.
 func ParseArguments(args []string) (string, error) {
+	if len(args) != 4 {
+		return "", fmt.Errorf("expected 'sum' or 'average' with 2 numeric values")
+	}
+
 	operation := args[1]
 	if operation != "sum" && operation != "average" {
 		return "", fmt.Errorf("operation not recognized")
 	}
 
-	numbersAsStrings := args[2:]
-	if len(numbersAsStrings) != 2 {
-		return "", fmt.Errorf("expected 2 arguments")
-	}
-
 	return operation, nil
 }
 
-// PrintSum does something.
+// PrintSum receives a type CalculatorClient and command-line arguments to create an SumRequest then log the AverageResponse.
 func PrintSum(client protos.CalculatorClient, args []string) {
 
 	numbers := make([]int32, 2)
@@ -51,7 +50,7 @@ func PrintSum(client protos.CalculatorClient, args []string) {
 	log.Println(response)
 }
 
-// PrintAverage does something.
+// PrintAverage receives a type CalculatorClient and command-line arguments to create an AverageRequest then log the AverageResponse.
 func PrintAverage(client protos.CalculatorClient, args []string) {
 	numbers := make([]float32, 2)
 	for i, arg := range args {
