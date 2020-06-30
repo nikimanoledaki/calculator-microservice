@@ -10,25 +10,10 @@ import (
 var _ = Describe("Calculator", func() {
 	Context("Can do basic arithmetic operations such as", func() {
 		It("adding two numbers", func() {
-			Expect(calculator.Sum(1, 1)).To(Equal(2))
+			Expect(calculator.Sum(1, 1)).Should(BeNumerically("==", 2))
 		})
-		It("substracting a number from the first one", func() {
-			Expect(calculator.Subtract(2, 1)).To(Equal(1))
-		})
-		It("multiplying two numbers", func() {
-			Expect(calculator.Multiply(2, 2)).To(Equal(4))
-		})
-		It("dividing a number by another number", func() {
-			Expect(calculator.Divide(2, 2)).To(Equal(1))
-		})
-	})
-
-	Context("When it receives the type of arithmetic operation to perform as a string", func() {
-		It("knows if it should sum the numbers", func() {
-			Expect(calculator.Compute("sum", 2, 3)).To(Equal(5))
-		})
-		It("knows if it should subtract from the first number", func() {
-			Expect(calculator.Compute("subtract", 4, 3)).To(Equal(1))
+		It("finding the average of two floats", func() {
+			Expect(calculator.Average(0, 1)).Should(BeNumerically("<", 1))
 		})
 	})
 })
