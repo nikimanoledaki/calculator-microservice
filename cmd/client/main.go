@@ -1,29 +1,32 @@
 package main
 
 import (
-	"context"
 	"log"
 	"os"
 
+	client "github.com/nikimanoledaki/calculator-microservice/pkg/client"
 	protos "github.com/nikimanoledaki/calculator-microservice/protos/calculator"
 	"google.golang.org/grpc"
 )
 
 func main() {
-	conn, err := grpc.Dial("localhost:9092")
+	operation, err := client.ParseArguments(os.Args)
 	if err != nil {
-		panic(err)
+		log.Fatalf("Error when parsing arguments: %s", err)
+	}
+
+	conn, err := grpc.Dial("localhost:9092", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("Failed to connect: %s", err)
 	}
 	defer conn.Close()
 
-	client := protos.NewCalculatorClient(conn)
+	clientService := protos.NewCalculatorClient(conn)
 
-	sum, err := client.GetSum(context.Background(), &protos.SumRequest)
-	if err != nil {
-		log.Fatalf("%v.GetSum(_) = _, %v: ", client, err)
-		os.Exit(1)
+	if operation == "sum" {
+		client.PrintSum(clientService, os.Args[2:])
+	} else {
+		client.PrintAverage(clientService, os.Args[2:])
 	}
-
-	log.Println(sum)
 
 }
