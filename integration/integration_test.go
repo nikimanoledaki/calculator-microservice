@@ -41,11 +41,11 @@ var _ = Describe("Integration", func() {
 		Eventually(session.Out).Should(gbytes.Say("1"))
 	})
 
-	It("If the operand is not recognized, it prints an error message", func() {
+	It("If the arithmetic operation is not recognized, it prints an error message", func() {
 		calculatorCommand = exec.Command(calculatorBinary, "unknown", "0", "0")
 		session, err := gexec.Start(calculatorCommand, GinkgoWriter, GinkgoWriter)
 		Expect(err).NotTo(HaveOccurred())
-		Eventually(session.Out).Should(gbytes.Say("operand could not be found\n"))
+		Eventually(session.Out).Should(gbytes.Say("opeartion could not be found\n"))
 	})
 
 	It("If the number of command line arguments is not 3, it prints an error message", func() {

@@ -5,9 +5,9 @@ import (
 	"fmt"
 )
 
-// Compute performs the arithmetic operation on two given numbers based on a given operand.
-func Compute(operand string, firstNumber, secondNumber int) (int, error) {
-	switch operand {
+// Compute performs the arithmetic operation on two given numbers based on a given type of artithmetic operation.
+func Compute(operation string, firstNumber, secondNumber int) (int, error) {
+	switch operation {
 	case "sum":
 		return Sum(firstNumber, secondNumber), nil
 	case "subtract":
@@ -17,7 +17,7 @@ func Compute(operand string, firstNumber, secondNumber int) (int, error) {
 	case "divide":
 		return Divide(firstNumber, secondNumber), nil
 	}
-	return 0, errors.New("operand could not be found")
+	return 0, errors.New("operation could not be found")
 }
 
 // Sum returns the sum of two numbers.

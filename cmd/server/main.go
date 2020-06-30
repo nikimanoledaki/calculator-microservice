@@ -1,32 +1,33 @@
 package main
 
 import (
-	"fmt"
+	"net"
 	"os"
-	"strconv"
 
-	"github.com/nikimanoledaki/calculator-microservice/pkg/calculator"
+	"github.com/hashicorp/go-hclog"
+	"github.com/nikimanoledaki/calculator-microservice/pkg/server"
+	protos "github.com/nikimanoledaki/calculator-microservice/protos/calculator"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 func main() {
-	if len(os.Args) != 4 {
-		fmt.Println("number of arguments is not valid")
-	}
+	log := hclog.Default()
 
-	operand, numbersAsString := os.Args[1], os.Args[2:]
+	calculatorService := server.NewComputation(log)
+	grpcServer := grpc.NewServer()
 
-	numbers := make([]int, len(numbersAsString))
-	for i, arg := range numbersAsString {
-		var err error
-		numbers[i], err = strconv.Atoi(arg)
-		if err != nil {
-			fmt.Println("last arguments must be numbers")
-		}
-	}
+	protos.RegisterCalculatorServer(grpcServer, calculatorService)
 
-	result, err := calculator.Compute(operand, numbers[0], numbers[1])
+	reflection.Register(grpcServer)
+
+	l, err := net.Listen("tcp", ":9092")
 	if err != nil {
-		fmt.Println(err)
+		log.Error("Failed to listen to port 9092", "error", err)
+		os.Exit(1)
 	}
-	fmt.Printf("%d\n", result)
+
+	if err := grpcServer.Serve(l); err != nil {
+		log.Error("Failed to serve gRPC sever over port 9092", "error", err)
+	}
 }

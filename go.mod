@@ -10,5 +10,5 @@ require (
 	github.com/onsi/gomega v1.10.1
 	google.golang.org/grpc v1.30.0
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v0.0.0-20200627230533-68098483a7af // indirect
-	google.golang.org/protobuf v1.23.0
+	google.golang.org/protobuf v1.25.0
 )

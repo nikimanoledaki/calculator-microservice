@@ -6,7 +6,7 @@ service Calculator {
 }
 
 message ComputationRequest {
-    string Operand = 1;
+    string Operation = 1;
     int32 FirstNumber = 2;
     int32 SecondNumber = 3;
 }

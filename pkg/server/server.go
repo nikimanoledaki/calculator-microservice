@@ -7,19 +7,21 @@ import (
 	protos "github.com/nikimanoledaki/calculator-microservice/protos/calculator"
 )
 
-// Calculator is a constructor.
+// Calculator is a struct used to create methods that implement
+// the gRPC interface.
 type Calculator struct {
 	log hclog.Logger
 }
 
-// NewComputation does something.
+// NewComputation is a constructor that implements the Calculator service interface.
 func NewComputation(l hclog.Logger) *Calculator {
 	return &Calculator{l}
 }
 
-// GetComputation does something.
+// GetComputation implements the gRPC interface to handle the ComputationRequest
+// and return the ComputationResponse methods.
 func (c *Calculator) GetComputation(ctx context.Context, rr *protos.ComputationRequest) (*protos.ComputationResponse, error) {
-	c.log.Info("Handle GetComputation", "operand", rr.GetOperand(), "firstNumber", rr.GetFirstNumber(), "secondNumber", rr.GetSecondNumber())
+	c.log.Info("Handle GetComputation", "Operation", rr.GetOperation(), "firstNumber", rr.GetFirstNumber(), "secondNumber", rr.GetSecondNumber())
 
 	return &protos.ComputationResponse{Result: 2}, nil
 }

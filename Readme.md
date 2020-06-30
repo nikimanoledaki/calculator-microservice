@@ -8,3 +8,5 @@ The unit and integration tests are written with `Ginkgo` and `Gomega`.
 ```
 ginkgo -r
 ```
+
+https://github.com/fullstorydev/grpcurl

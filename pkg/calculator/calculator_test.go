@@ -23,7 +23,7 @@ var _ = Describe("Calculator", func() {
 		})
 	})
 
-	Context("When it receives an operand as a string", func() {
+	Context("When it receives the type of arithmetic operation to perform as a string", func() {
 		It("knows if it should sum the numbers", func() {
 			Expect(calculator.Compute("sum", 2, 3)).To(Equal(5))
 		})
