@@ -28,6 +28,7 @@ func main() {
 	}
 
 	if err := grpcServer.Serve(l); err != nil {
-		log.Error("Failed to serve gRPC sever over port 9092", "error", err)
+		log.Error("Failed to serve gRPC server over port 9092", "error", err)
+		os.Exit(1)
 	}
 }

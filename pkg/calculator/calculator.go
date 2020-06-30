@@ -1,7 +1,7 @@
 package calculator
 
 // Sum returns the sum of two integers as an integer.
-func Sum(firstNumber, secondNumber int) int {
+func Sum(firstNumber, secondNumber int32) int32 {
 	return firstNumber + secondNumber
 }
 

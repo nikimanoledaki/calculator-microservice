@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/hashicorp/go-hclog"
+	"github.com/nikimanoledaki/calculator-microservice/pkg/calculator"
 	protos "github.com/nikimanoledaki/calculator-microservice/protos/calculator"
 )
 
@@ -18,16 +19,20 @@ func NewComputation(l hclog.Logger) *CalculatorServer {
 	return &CalculatorServer{l}
 }
 
-// GetSum implements the gRPC method for GetSum by handling the SumRequest and returning the SumResponse.
-func (cs *CalculatorServer) GetSum(ctx context.Context, sum *protos.SumRequest) (*protos.SumResponse, error) {
-	cs.log.Info("Handle GetSum", "firstNumber", sum.GetFirstNumber(), "secondNumber", sum.GetSecondNumber())
+// GetSum implements the gRPC method GetSum by handling the SumRequest and returning the SumResponse.
+func (cs *CalculatorServer) GetSum(ctx context.Context, sumReq *protos.SumRequest) (*protos.SumResponse, error) {
+	cs.log.Info("Handle GetSum", "firstNumber", sumReq.GetFirstNumber(), "secondNumber", sumReq.GetSecondNumber())
 
-	return &protos.SumResponse{Result: 2}, nil
+	calculatedSum := calculator.Sum(sumReq.GetFirstNumber(), sumReq.GetSecondNumber())
+
+	return &protos.SumResponse{Result: calculatedSum}, nil
 }
 
-// GetAverage implements the gRPC method for GetAverage by handling the AverageRequest and returning the AverageResponse.
-func (cs *CalculatorServer) GetAverage(ctx context.Context, average *protos.AverageRequest) (*protos.AverageResponse, error) {
-	cs.log.Info("Handle GetAverage", "firstNumber", average.GetFirstNumber(), "secondNumber", average.GetSecondNumber())
+// GetAverage implements the gRPC method GetAverage by handling the AverageRequest and returning the AverageResponse.
+func (cs *CalculatorServer) GetAverage(ctx context.Context, avgReq *protos.AverageRequest) (*protos.AverageResponse, error) {
+	cs.log.Info("Handle GetAverage", "firstNumber", avgReq.GetFirstNumber(), "secondNumber", avgReq.GetSecondNumber())
 
-	return &protos.AverageResponse{Result: 2}, nil
+	calculatedAvg := calculator.Average(avgReq.GetFirstNumber(), avgReq.GetSecondNumber())
+
+	return &protos.AverageResponse{Result: calculatedAvg}, nil
 }

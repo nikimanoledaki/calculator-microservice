@@ -1,30 +1,29 @@
 package main
 
 import (
-	"fmt"
+	"context"
+	"log"
 	"os"
-	"strconv"
+
+	protos "github.com/nikimanoledaki/calculator-microservice/protos/calculator"
+	"google.golang.org/grpc"
 )
 
 func main() {
-	if len(os.Args) != 3 {
-		fmt.Println("number of arguments is not valid")
+	conn, err := grpc.Dial("localhost:9092")
+	if err != nil {
+		panic(err)
+	}
+	defer conn.Close()
+
+	client := protos.NewCalculatorClient(conn)
+
+	sum, err := client.GetSum(context.Background(), &protos.SumRequest)
+	if err != nil {
+		log.Fatalf("%v.GetSum(_) = _, %v: ", client, err)
+		os.Exit(1)
 	}
 
-	numbersAsString := os.Args[1:]
+	log.Println(sum)
 
-	numbers := make([]int, len(numbersAsString))
-	for i, arg := range numbersAsString {
-		var err error
-		numbers[i], err = strconv.Atoi(arg)
-		if err != nil {
-			fmt.Println("last arguments must be numbers")
-		}
-	}
-
-	// result, err := calculator.Sum(numbers[0], numbers[1])
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
-	// fmt.Printf("%d\n", result)
 }
