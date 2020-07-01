@@ -4,9 +4,18 @@
 
 This is a simple microservice to do basic arithmetic operations. It has a gRPC client and server that implement two methods, one to add two `int32` values and one to find the average of two `float32` values. It has a CLI-based client that prints out the result of the calculations.
 
-## Start the server and client
+## 1. Implementation
 
-The first step is to start the server.
+### Start the server and client
+
+To set up the server, pull the container image from Docker Hub and then start the server on port `9092`.
+
+```
+docker pull niki2401/calculator-microservice
+docker run -d -p 9092:9092  niki2401/calculator-microservice
+```
+
+If this does not work for you, you can set up the server locally. The server listens to port `9092`.
 
 ```
 go run cmd/server/main.go
@@ -25,26 +34,44 @@ You can use the CLI client to find the sum of two `int32` values or the average 
 ./client average 9.5 10
 ```
 
-## Testing
+### Testing
 
-### Unit Tests
+#### Unit Tests
 
 Unit tests use the `Ginkgo`/`Gomega` dependecies and can be run with the following command if ginkgo is installed on your machine and can be found on your `$PATH`. Add the `-cover` flag to run the tests using Go's code coverage tool.
+
+To install ginkgo and gomega:
+
+```
+ go get github.com/onsi/ginkgo/ginkgo
+ go get github.com/onsi/gomega/...
+```
+
+To run the tests:
 
 ```
 ginkgo -r -cover
 ```
 
-The following commands are helpful to inspect a coverage file:
+The following commands can be used to inspect the test coverage in depth, using the test coverage file for `Client` as an example.
 
 ```
 go tool cover -func=client.coverprofile
 go tool cover -html=client.coverprofile
 ```
 
-### grpcurl
+#### grpcurl
 
-Also, [grpcurl](https://github.com/fullstorydev/grpcurl) is a very nice tool to do manual feature tests with sending and receiving requests. It was particularly useful while building the server, before there was a client to test that the server functioned properly.
+[grpcurl](https://github.com/fullstorydev/grpcurl) is a very nice open-source go-based tool to do manual feature tests with sending and receiving requests. It was particularly useful while building the server, before there was a client to test that the server functioned properly.
+
+To install it:
+
+```
+go get github.com/fullstorydev/grpcurl
+go install github.com/fullstorydev/grpcurl/cmd/grpcurl
+```
+
+To use it:
 
 ```
 $ grpcurl --plaintext -d '{"FirstNumber": 1, "SecondNumber": 5}' localhost:9092 Calculator.GetSum
@@ -95,3 +122,18 @@ message AverageRequest {
   float SecondNumber = 2;
 }
 ```
+
+## 2. Documentation
+
+1. Prove how it aligns to 12factor app best practices</br>
+2. Prove how it fits and uses the best cloud native understanding</br>
+3. How would you expand on this service to allow for the use of an eventstore?</br>
+4. How would this service be accessed and used from an external client from the cluster? </br>
+   According to the Kubernetes [docs](https://kubernetes.io/docs/tutorials/hello-minikube/#create-a-service), "by default, the Pod is only accessible by its internal IP address within the Kubernetes cluster." For this service to be accessed and used from an external client from the cluster, meaning outside of the Kubernetes virtual network, the Pod that has the Service container must be exposed as a Kubernetes Service.
+
+   This can be done like this:
+
+   ```
+   ~ kubectl expose deployment calculator-pod --type=LoadBalancer --port=9092
+   service/hello-node exposed
+   ```

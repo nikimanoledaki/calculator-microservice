@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metada:
+  name: calculator-deployment
+  labels:
+    app: calculator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: calculator
+  template:
+    metada:
+      labels:
+        app: calculator
+    spec:
+      containers:
+        - name: calculator
+          image: niki2401/calculator-microservice:latest
+          ports:
+            - containerPort: 9092

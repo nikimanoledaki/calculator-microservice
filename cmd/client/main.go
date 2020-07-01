@@ -17,12 +17,13 @@ func main() {
 
 	conn, err := grpc.Dial("localhost:9092", grpc.WithInsecure())
 	if err != nil {
-		log.Fatalf("Failed to connect: %s", err)
+		log.Fatalf("Failed to connect to port 9092: %s", err)
 	}
 	defer conn.Close()
 
 	clientService := protos.NewCalculatorClient(conn)
 
+	// TODO: Move this logic to pkg/client and test it
 	if operation == "sum" {
 		client.PrintSum(clientService, os.Args[2:])
 	} else {
