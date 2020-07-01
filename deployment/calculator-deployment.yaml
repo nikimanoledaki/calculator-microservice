@@ -1,6 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
-metada:
+metadata:
   name: calculator-deployment
   labels:
     app: calculator
@@ -10,7 +10,7 @@ spec:
     matchLabels:
       app: calculator
   template:
-    metada:
+    metadata:
       labels:
         app: calculator
     spec:

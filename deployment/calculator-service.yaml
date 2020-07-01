@@ -3,9 +3,10 @@ kind: Service
 metadata:
   name: calculator-service
 spec:
+  type: LoadBalancer
   selector:
     app: calculator
-  type: ClusterIP
   ports:
     - protocol: TCP
       port: 9092
+      targetPort: 9092

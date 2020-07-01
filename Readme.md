@@ -15,7 +15,7 @@ docker pull niki2401/calculator-microservice
 docker run -d -p 9092:9092  niki2401/calculator-microservice
 ```
 
-If this does not work for you, you can set up the server locally. The server listens to port `9092`.
+If this does not work for you, you can set up the server locally. The server will isten to port `9092` by default.
 
 ```
 go run cmd/server/main.go
@@ -27,7 +27,7 @@ Then build the client in another terminal.
 go build -o client cmd/client/main.go
 ```
 
-You can use the CLI client to find the sum of two `int32` values or the average of two `float32` values!
+You can use the CLI client to find the sum of two integers or the average of two floats!
 
 ```
 ./client sum 3 8
@@ -130,11 +130,6 @@ message AverageRequest {
 **Prove how it fits and uses the best cloud native understanding**</br>
 **How would you expand on this service to allow for the use of an eventstore?**</br>
 **How would this service be accessed and used from an external client from the cluster?** </br>
-   According to the Kubernetes [docs](https://kubernetes.io/docs/tutorials/hello-minikube/#create-a-service), "by default, the Pod is only accessible by its internal IP address within the Kubernetes cluster." For this service to be accessed and used from an external client from the cluster, meaning outside of the Kubernetes virtual network, the Pod that has the Service container must be exposed as a Kubernetes Service.
+   According to the Kubernetes [docs](https://kubernetes.io/docs/tutorials/hello-minikube/#create-a-service), resources are only accessible by their internal IP address within the Kubernetes cluster. For resources to be accessed and used from an external client from the cluster, meaning outside of the Kubernetes virtual network, the Pod that has the Service container must be exposed as a Service.
 
-   This can be done like this:
-
-   ```
-   ~ kubectl expose deployment calculator-pod --type=LoadBalancer --port=9092
-   service/hello-node exposed
-   ```
+   In this case, a `NodePort` type of Service applies to our `Calculator` app to exposes `port 9092` internally andexternally from our cluster. 
