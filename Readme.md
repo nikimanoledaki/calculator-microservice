@@ -1,3 +1,5 @@
+[![Codefresh build status](https://g.codefresh.io/api/badges/pipeline/zabon/calculator-microservice?key=eyJhbGciOiJIUzI1NiJ9.NWVmYjk4MGM5Zjg4MTkzOTRjZTkzM2Q0.qIGEzYTOB3eZyFH-SLjUYJJzjue2FGMHoGEnJ9h11mw&type=cf-1)](https%3A%2F%2Fg.codefresh.io%2Fpipelines%2Fcalculator-microservice%2Fbuilds%3Ffilter%3Dtrigger%3Abuild~Build%3Bpipeline%3A5efb9893e8d6bb7c8b1aa55c~calculator-microservice)
+
 # Calculator Microservice
 
 This is a simple microservice to do basic arithmetic operations. It has a gRPC client and server that implement two methods, one to add two `int32` values and one to find the average of two `float32` values. It has a CLI-based client that prints out the result of the calculations.
