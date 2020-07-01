@@ -125,10 +125,11 @@ message AverageRequest {
 
 ## 2. Documentation
 
-1. Prove how it aligns to 12factor app best practices</br>
-2. Prove how it fits and uses the best cloud native understanding</br>
-3. How would you expand on this service to allow for the use of an eventstore?</br>
-4. How would this service be accessed and used from an external client from the cluster? </br>
+**Prove how it aligns to 12factor app best practices**</br>
+
+**Prove how it fits and uses the best cloud native understanding**</br>
+**How would you expand on this service to allow for the use of an eventstore?**</br>
+**How would this service be accessed and used from an external client from the cluster?** </br>
    According to the Kubernetes [docs](https://kubernetes.io/docs/tutorials/hello-minikube/#create-a-service), "by default, the Pod is only accessible by its internal IP address within the Kubernetes cluster." For this service to be accessed and used from an external client from the cluster, meaning outside of the Kubernetes virtual network, the Pod that has the Service container must be exposed as a Kubernetes Service.
 
    This can be done like this:
