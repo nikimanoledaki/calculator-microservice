@@ -2,7 +2,7 @@ FROM golang:alpine AS build_base
 
 ENV GO111MODULE=on
 
-RUN apk add --no-cache git bash gcc && \
+RUN apk add --no-cache git bash gcc g++ libc-dev && \
     mkdir /calculator-microservice
 
 WORKDIR /calculator-microservice
