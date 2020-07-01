@@ -29,10 +29,17 @@ You can use the CLI client to find the sum of two `int32` values or the average 
 
 ### Unit Tests
 
-Unit tests use the `Ginkgo`/`Gomega` dependecies and can be run with the following command if ginkgo is installed on your machine and can be found on your `$PATH`.
+Unit tests use the `Ginkgo`/`Gomega` dependecies and can be run with the following command if ginkgo is installed on your machine and can be found on your `$PATH`. Add the `-cover` flag to run the tests using Go's code coverage tool.
 
 ```
-ginkgo -r pkg
+ginkgo -r -cover
+```
+
+The following commands are helpful to inspect a coverage file:
+
+```
+go tool cover -func=client.coverprofile
+go tool cover -html=client.coverprofile
 ```
 
 ### grpcurl
