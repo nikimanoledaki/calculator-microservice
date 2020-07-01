@@ -2,7 +2,7 @@
 
 This is a simple microservice to do basic arithmetic operations. It has a gRPC client and server that implement two methods, one to add two `int32` values and one to find the average of two `float32` values. It has a CLI-based client that prints out the result of the calculations.
 
-## The gRPC server and client
+## Start the server and client
 
 The first step is to start the server.
 
@@ -16,7 +16,7 @@ Then build the client in another terminal.
 go build -o client cmd/client/main.go
 ```
 
-Now you can use the CLI client to find the sum or average of two numbers!
+You can use the CLI client to find the sum of two `int32` values or the average of two `float32` values!
 
 ```
 ./client sum 3 8
