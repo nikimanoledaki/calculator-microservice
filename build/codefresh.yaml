@@ -20,7 +20,7 @@ steps:
     image_name: "niki2401/calculator-microservice"
     working_directory: "${{clone}}"
     tag: "${{CF_BRANCH_TAG_NORMALIZED}}"
-    dockerfile: "deployment/Dockerfile"
+    dockerfile: "build/Dockerfile"
     stage: "build"
 
   test:
