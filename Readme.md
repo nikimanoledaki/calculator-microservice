@@ -6,7 +6,19 @@ This is a simple microservice that can be used to do basic arithmetic operations
 
 ## 1. Implementation
 
-### Start the server and the client
+### Technologies
+
+- Testing: Ginkgo, Gomega, grpcurl
+
+- Code Quality: Golint
+
+- Containerisation: Docker
+
+- CI/CD: Codefresh
+
+- Container orchestration: Kubernetes, kind
+
+### Use
 
 To set up the server, pull the container image from Docker Hub. Then, run the container to start the server, which listens on port `9092` by default.
 
@@ -21,7 +33,7 @@ If for some reason this does not work for you, you can also run the server local
 go run cmd/server/main.go
 ```
 
-Then, in another terminal, build the client.
+Once the server is running, build the client in another terminal.
 
 ```
 go build -o client cmd/client/main.go
@@ -34,7 +46,7 @@ Now you can use the CLI client to find the sum of two integers or the average of
 ./client average 9.5 10
 ```
 
-### Testing
+### Test
 
 #### Unit and Integration Tests
 
@@ -53,16 +65,16 @@ ginkgo -r test
 
 #### Feature tests
 
-[grpcurl](https://github.com/fullstorydev/grpcurl) was used a lot in the making of this service. It is a very easy to use open-source tool that can be used to do manual feature tests to test a gRPC server. It was particularly useful while building the server, before there was a client to test that the server functioned properly.
+[grpcurl](https://github.com/fullstorydev/grpcurl) was used a lot in the making of this service. It is a neat open-source tool that can be used to do manual feature tests to test a gRPC server.
 
-Here is how to install it if you would like to try it out:
+It can be installed like this:
 
 ```
 go get github.com/fullstorydev/grpcurl
 go install github.com/fullstorydev/grpcurl/cmd/grpcurl
 ```
 
-To use it, run the server locally in one terminal, and then run the following command in another terminal.
+If you would like to use it, run the server locally in one terminal (by running the Docker image or running it locally), and then enter the following command in another terminal.
 
 ```
 // Client terminal
@@ -89,7 +101,7 @@ $ grpcurl --plaintext -d '{"FirstNumber": 1.0, "SecondNumber": 2.0}' localhost:9
 2020-06-30T19:40:28.249+0100 [INFO]  Handle GetAverage: firstNumber=1 secondNumber=2
 ```
 
-It is also a pretty neat way to get more information about specific methods and messages available in the gRPC interface.
+Here is more information about specific the methods of the service's gRPC interface:
 
 ```
 $ grpcurl --plaintext localhost:9092 describe Calculator
@@ -113,23 +125,23 @@ message AverageRequest {
 
 ### Prove how it aligns to 12factor app best practices
 
-Many of the requirements of the 12factor app methodology can be satisfied through the use of Go, containers (runc, containerd), Docker, and Kubernetes. Most of the 12 points are "checked" by this service. Points 4 (Backing Service) and 12 (Admin Processes) are a bit out of scope, but this service fares well otherwise!
+Many of the requirements of the 12factor app methodology can be satisfied through the use of Go, containers (runc, containerd), Docker, and Kubernetes. The list below illustrates how many of the 12 points are "checked" by this service. Points 4 (Backing Service) and 12 (Admin Processes) are a bit out of scope, but this service fares well otherwise!
 
-**1 Codebase:** The code is managed with Git and an image of it is also created with Docker, which can be pulled from Docker Hub. The container image is also specified in the Kubernetes Deployment for the service.
+**1 Codebase:** The code is on Github and its image can be pulled from Docker Hub, which is the same as the one specified in the Kubernetes Deployment for the service.
 
-**2 Dependencies:** All dependencies are explicitly declared in `go.mod` and locked in `go.sum`. They have also been copied into the container through the Dockerfile.
+**2 Dependencies:** All dependencies are explicitly declared in `go.mod` and locked in `go.sum`. They are copied into the container, which is declared in the Dockerfile.
 
-**3 Config:** `ENV` variables are set in the Dockerfile. A ConfigMap is not provided with this service but it could be used to fulfill this requirement.
+**3 Config:** `ENV` variables are set in the Dockerfile. A ConfigMap is not included in this service but it could be used to fulfill this requirement.
 
-**5 Build, release, run:** Running one or multiple instances of this service can be done by implementing the Deployment and the ReplicaSet provided in the `Deploy/Kubernetes` folder.
+**5 Build, release, run:** Running one or multiple instances of this service can be done by implementing the `Deployment` and the `ReplicaSet` provided in the `Deploy/Kubernetes` folder.
 
-**6 Processes:** Some might argue that the `StatefulSet` config might breach this point because it stores some state, but there is no state actually being stored in this service since its implementation is very ephemereal.
+**6 Processes:** There is no state actually being stored in this service and its implementation is very ephemereal.
 
-**7 Port binding:** The port of this service can be exported because of the `Service` of type `LoadBalancer` that applies to this application.
+**7 Port binding:** The port of this service can be exported because of the `Service` of type `LoadBalancer` that applies to the service.
 
-**8 Concurrency & 9 Disposability:** Kubernetes makes it easy to scale the service by making replicas and the containers themselves are ephemeral and easy to reproduce and to quickly spin up.
+**8 Concurrency & 9 Disposability:** Kubernetes makes it easy to scale the service by making replicas. The containers themselves are ephemeral and easy to reproduce and to quickly spin up.
 
-**10 Dev/prod parity:** The use of lightweight virtualization such as containers minimizes the gap between development and production because the container runtime makes it easy to run environment variables, tools and services in isolation.
+**10 Dev/prod parity:** The use of lightweight virtualization through containers minimizes the gap between development and production because the container runtime makes it easy to run environment variables, tools and services in isolation.
 
 **11 Logs:** This service relies heavily on printing things to `stdout` and relies on it heavily for error-handling as well.
 
@@ -141,11 +153,11 @@ Official definition of "Cloud Native" from the Cloud Native Computing Foundation
 > </br></br>
 > These techniques enable loosely coupled systems that are resilient, manageable, and observable. Combined with robust automation, they allow engineers to make high-impact changes frequently and predictably with minimal toil.
 
-This service fits and uses the best cloud native understanding given that it checks off most of the 12factor requirements through its implementation of microservice best practices such as containerisation, Docker, and gRPC. It can run independently and is easy to deploy within an orchestrator such as Kubernetes. This means that it can benefit from the monitoring and configuration capabilities of Kubernetes and makes this service resilient, observable, and easy to replicate.
+This service fits and uses the best cloud native understanding given that it checks off most of the 12factor requirements. It implements microservice best practices such as containerisation, Docker, and a gRPC interface. It can run independently and is easy to deploy within an orchestrator such as Kubernetes, so it can benefit from the monitoring and configuration capabilities of Kubernetes, which makes this service resilient, observable, and easy to replicate.
 
 ### How would you expand on this service to allow for the use of an eventstore?
 
-The server of the calculator service could be a "consumer" of an eventstore stream. It could [read events](https://eventstore.com/docs/getting-started/reading-subscribing-events/index.html?tabs=tabid-6%2Ctabid-dotnet-client%2Ctabid-dotnet-read-event%2Ctabid-create-sub-dotnet) from an event stream. Events can be written to this stream by a client of the calculator service. Within Kubernetes, the eventstore would have to be `Service` with an exposed `PORT` and will need the capability to receive `GET` and `POST` requests to its HTTP API interface. There are different [subscription types](https://eventstore.com/docs/getting-started/reading-subscribing-events/index.html?tabs=tabid-6%2Ctabid-dotnet-client%2Ctabid-10%2Ctabid-create-sub-dotnet#subscription-types) that could be used in this case depending on the use case.
+The server of the calculator service could be a "consumer" of an eventstore stream so that it can [read events](https://eventstore.com/docs/getting-started/reading-subscribing-events/index.html?tabs=tabid-6%2Ctabid-dotnet-client%2Ctabid-dotnet-read-event%2Ctabid-create-sub-dotnet) by subscribing to an event stream. Events could be written to the stream by a client of the calculator service, which would mean that the calculator server and the calculator client share an event store database. This way, the event store could be a broker for the transactions between the client and the server. The eventstore would need the capability to receive `GET` and `POST` requests to its HTTP API interface so, within a Kubernetes cluster, it would have to be matched with a `Service` that exposes a `PORT` for it. There are different [subscription types](https://eventstore.com/docs/getting-started/reading-subscribing-events/index.html?tabs=tabid-6%2Ctabid-dotnet-client%2Ctabid-10%2Ctabid-create-sub-dotnet#subscription-types) that could be used by the service depending on the use case.
 
 ### How would this service be accessed and used from an external client from the cluster?
 
