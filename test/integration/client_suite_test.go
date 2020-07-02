@@ -19,15 +19,15 @@ func TestClient(t *testing.T) {
 }
 
 var (
+	err           error
 	serverBinary  string
 	clientBinary  string
 	serverCommand *exec.Cmd
 	serverSession *gexec.Session
-	clt           protos.CalculatorClient
+	conn          *grpc.ClientConn
 	ctx           context.Context
 	cancel        context.CancelFunc
-	conn          *grpc.ClientConn
-	err           error
+	clt           protos.CalculatorClient
 )
 
 var _ = BeforeSuite(func() {
