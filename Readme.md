@@ -2,32 +2,32 @@
 
 # Calculator Microservice
 
-This is a simple microservice to do basic arithmetic operations. It has a gRPC client and server that implement two methods, one to add two `int32` values and one to find the average of two `float32` values. It has a CLI-based client that prints out the result of the calculations.
+This is a simple microservice that can be used to do basic arithmetic operations. It has a client and a server that implement two methods from a gRPC interface, one to add two `int32` values and one to find the average of two `float32` values. The client is CLI-based and prints out the result of the calculation.
 
 ## 1. Implementation
 
-### Start the server and client
+### Start the server and the client
 
-To set up the server, pull the container image from Docker Hub and then start the server on port `9092`.
+To set up the server, pull the container image from Docker Hub. Then, run the container to start the server, which listens on port `9092` by default.
 
 ```
 docker pull niki2401/calculator-microservice
 docker run -d -p 9092:9092  niki2401/calculator-microservice
 ```
 
-If this does not work for you, you can set up the server locally. The server will isten to port `9092` by default.
+If for some reason this does not work for you, you can also run the server locally.
 
 ```
 go run cmd/server/main.go
 ```
 
-Then build the client in another terminal.
+Then, in another terminal, build the client.
 
 ```
 go build -o client cmd/client/main.go
 ```
 
-You can use the CLI client to find the sum of two integers or the average of two floats!
+Now you can use the CLI client to find the sum of two integers or the average of two floats!
 
 ```
 ./client sum 3 8
@@ -36,53 +36,45 @@ You can use the CLI client to find the sum of two integers or the average of two
 
 ### Testing
 
-#### Unit Tests
+#### Unit and Integration Tests
 
-Unit tests use the `Ginkgo`/`Gomega` dependecies and can be run with the following command if ginkgo is installed on your machine and can be found on your `$PATH`. Add the `-cover` flag to run the tests using Go's code coverage tool.
-
-To install ginkgo and gomega:
+To run the tests, you will need to have `Ginkgo` and `Gomega`, which can be installed with the following commands.
 
 ```
  go get github.com/onsi/ginkgo/ginkgo
  go get github.com/onsi/gomega/...
 ```
 
-To run the tests:
+The tests are located in the `Test` folder and can be run with the following command.
 
 ```
-ginkgo -r -cover
+ginkgo -r test
 ```
 
-The following commands can be used to inspect the test coverage in depth, using the test coverage file for `Client` as an example.
+#### Feature tests
 
-```
-go tool cover -func=client.coverprofile
-go tool cover -html=client.coverprofile
-```
+[grpcurl](https://github.com/fullstorydev/grpcurl) was used a lot in the making of this service. It is a very easy to use open-source tool that can be used to do manual feature tests to test a gRPC server. It was particularly useful while building the server, before there was a client to test that the server functioned properly.
 
-#### grpcurl
-
-[grpcurl](https://github.com/fullstorydev/grpcurl) is a very nice open-source go-based tool to do manual feature tests with sending and receiving requests. It was particularly useful while building the server, before there was a client to test that the server functioned properly.
-
-To install it:
+Here is how to install it if you would like to try it out:
 
 ```
 go get github.com/fullstorydev/grpcurl
 go install github.com/fullstorydev/grpcurl/cmd/grpcurl
 ```
 
-To use it:
+To use it, run the server locally in one terminal, and then run the following command in another terminal.
 
 ```
+// Client terminal
 $ grpcurl --plaintext -d '{"FirstNumber": 1, "SecondNumber": 5}' localhost:9092 Calculator.GetSum
+
+// Server view
+2020-06-30T19:41:53.038+0100 [INFO]  Handle GetSum: firstNumber=1 secondNumber=5
 
 // Client view
 {
   "Result": 6
 }
-
-// Server view
-2020-06-30T19:41:53.038+0100 [INFO]  Handle GetSum: firstNumber=1 secondNumber=5
 ```
 
 ```
@@ -97,7 +89,7 @@ $ grpcurl --plaintext -d '{"FirstNumber": 1.0, "SecondNumber": 2.0}' localhost:9
 2020-06-30T19:40:28.249+0100 [INFO]  Handle GetAverage: firstNumber=1 secondNumber=2
 ```
 
-It is also pretty neat to get more information about specific methods and messages available in the gRPC interface.
+It is also a pretty neat way to get more information about specific methods and messages available in the gRPC interface.
 
 ```
 $ grpcurl --plaintext localhost:9092 describe Calculator
@@ -106,12 +98,6 @@ service Calculator {
   rpc GetAverage ( .AverageRequest ) returns ( .AverageResponse );
   rpc GetSum ( .SumRequest ) returns ( .SumResponse );
 }
-```
-
-```
-$ grpcurl --plaintext localhost:9092 describe Calculator.GetAverage
-Calculator.GetAverage is a method:
-rpc GetAverage ( .AverageRequest ) returns ( .AverageResponse );
 ```
 
 ```
@@ -125,11 +111,32 @@ message AverageRequest {
 
 ## 2. Documentation
 
-**Prove how it aligns to 12factor app best practices**</br>
+### Prove how it aligns to 12factor app best practices
 
-**Prove how it fits and uses the best cloud native understanding**</br>
-**How would you expand on this service to allow for the use of an eventstore?**</br>
-**How would this service be accessed and used from an external client from the cluster?** </br>
-   According to the Kubernetes [docs](https://kubernetes.io/docs/tutorials/hello-minikube/#create-a-service), resources are only accessible by their internal IP address within the Kubernetes cluster. For resources to be accessed and used from an external client from the cluster, meaning outside of the Kubernetes virtual network, the Pod that has the Service container must be exposed as a Service.
+Many of the requirements of the 12factor app methodology can be satisfied through the use of Go, containers (runc, containerd), Docker, and Kubernetes. Most of the 12 points are "checked" by this service. Points 4 (Backing Service) and 12 (Admin Processes) are a bit out of scope, but this service fares well otherwise!
 
-   In this case, a `NodePort` type of Service applies to our `Calculator` app to exposes `port 9092` internally andexternally from our cluster. 
+**1 Codebase:** The code is managed with Git and an image of it is also created with Docker, which can be pulled from Docker Hub. The container image is also specified in the Kubernetes Deployment for the service.
+
+**2 Dependencies:** All dependencies are explicitly declared in `go.mod` and locked in `go.sum`. They have also been copied into the container through the Dockerfile.
+
+**3 Config:** `ENV` variables are set in the Dockerfile. A ConfigMap is not provided with this service but it could be used to fulfill this requirement.
+
+**5 Build, release, run:** Running one or multiple instances of this service can be done by implementing the Deployment and the ReplicaSet provided in the `Deploy/Kubernetes` folder.
+
+**6 Processes:** Some might argue that the `StatefulSet` config might breach this point because it stores some state, but there is no state actually being stored in this service since its implementation is very ephemereal.
+
+**7 Port binding:** The port of this service can be exported because of the `Service` of type `LoadBalancer` that applies to this application.
+
+**8 Concurrency & 9 Disposability:** Kubernetes makes it easy to scale the service by making replicas and the containers themselves are ephemeral and easy to reproduce and to quickly spin up.
+
+**10 Dev/prod parity:** The use of lightweight virtualization such as containers minimizes the gap between development and production because the container runtime makes it easy to run environment variables, tools and services in isolation.
+
+**11 Logs:** This service relies heavily on printing things to `stdout` and relies on it heavily for error-handling as well.
+
+### Prove how it fits and uses the best cloud native understanding
+
+### How would you expand on this service to allow for the use of an eventstore?
+
+### How would this service be accessed and used from an external client from the cluster?
+
+According to the Kubernetes [docs](https://kubernetes.io/docs/tutorials/hello-minikube/#create-a-service), resources are only accessible by their internal IP address within the Kubernetes cluster and must be exposed as a Service in order to be accessed and used from an external client from the cluster, meaning outside of the Kubernetes virtual network. In this case, a Service of type `LoadBalancer` applies to our `Calculator` app to expose `port 9092` internally and externally of our cluster.
