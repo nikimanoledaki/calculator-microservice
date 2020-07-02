@@ -29,23 +29,23 @@ var _ = Describe("Client", func() {
 			})
 		})
 
-		Context("Function ParseArguments", func() {
+		Context("If the arguments are not the binary, an operator, and two digits", func() {
 			BeforeEach(func() {
 				args = []string{"./client", "sum", "1", "2", "3"}
 			})
 
-			It("returns an error if the number of arguments is 0", func() {
+			It("it returns an error", func() {
 				Expect(err).Should(MatchError("expected 'sum' or 'average' with 2 numeric values"))
 				Expect(operation).To(Equal(""))
 			})
 		})
 
-		Context("Function ParseArguments", func() {
+		Context("If there is a client, an operator, and two digits", func() {
 			BeforeEach(func() {
 				args = []string{"./client", "sum", "1", "2"}
 			})
 
-			It("returns no error", func() {
+			It("returns no error and the operator", func() {
 				Expect(err).ShouldNot(HaveOccurred())
 				Expect(operation).To(Equal("sum"))
 			})

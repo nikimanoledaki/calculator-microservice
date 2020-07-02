@@ -23,11 +23,9 @@ func main() {
 
 	clientService := protos.NewCalculatorClient(conn)
 
-	// TODO: Move this logic to pkg/client and test it
 	if operation == "sum" {
 		client.PrintSum(clientService, os.Args[2:])
 	} else {
 		client.PrintAverage(clientService, os.Args[2:])
 	}
-
 }

@@ -14,9 +14,6 @@ RUN go mod download
 
 COPY . .
 
-# RUN go get github.com/onsi/ginkgo/ginkgo && \ 
-#     go get github.com/onsi/gomega/...
-
 RUN go build -o server /calculator-microservice/cmd/server/main.go
 
 EXPOSE 9092
