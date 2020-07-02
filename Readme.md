@@ -67,14 +67,14 @@ ginkgo -r test
 
 [grpcurl](https://github.com/fullstorydev/grpcurl) was used a lot in the making of this service. It is a neat open-source tool that can be used to do manual feature tests to test a gRPC server.
 
-It can be installed like this:
+It can be installed with these commands:
 
 ```
 go get github.com/fullstorydev/grpcurl
 go install github.com/fullstorydev/grpcurl/cmd/grpcurl
 ```
 
-If you would like to use it, run the server locally in one terminal (by running the Docker image or running it locally), and then enter the following command in another terminal.
+If you would like to try it on this service, run the server locally in one terminal (by running the Docker image or running it locally), and then enter the following command in another terminal.
 
 ```
 // Client terminal
