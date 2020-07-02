@@ -135,7 +135,17 @@ Many of the requirements of the 12factor app methodology can be satisfied throug
 
 ### Prove how it fits and uses the best cloud native understanding
 
+Official definition of "Cloud Native" from the Cloud Native Computing Foundation - **[CNCF Cloud Native Definition v1.0](https://github.com/cncf/foundation/blob/master/charter.md#1-mission-of-the-cloud-native-computing-foundation)**
+
+> Cloud native technologies empower organizations to build and run scalable applications in modern, dynamic environments such as public, private, and hybrid clouds. Containers, service meshes, microservices, immutable infrastructure, and declarative APIs exemplify this approach.
+> </br></br>
+> These techniques enable loosely coupled systems that are resilient, manageable, and observable. Combined with robust automation, they allow engineers to make high-impact changes frequently and predictably with minimal toil.
+
+This service fits and uses the best cloud native understanding given that it checks off most of the 12factor requirements through its implementation of microservice best practices such as containerisation, Docker, and gRPC. It can run independently and is easy to deploy within an orchestrator such as Kubernetes. This means that it can benefit from the monitoring and configuration capabilities of Kubernetes and makes this service resilient, observable, and easy to replicate.
+
 ### How would you expand on this service to allow for the use of an eventstore?
+
+The server of the calculator service could be a "consumer" of an eventstore stream. It could [read events](https://eventstore.com/docs/getting-started/reading-subscribing-events/index.html?tabs=tabid-6%2Ctabid-dotnet-client%2Ctabid-dotnet-read-event%2Ctabid-create-sub-dotnet) from an event stream. Events can be written to this stream by a client of the calculator service. Within Kubernetes, the eventstore would have to be `Service` with an exposed `PORT` and will need the capability to receive `GET` and `POST` requests to its HTTP API interface. There are different [subscription types](https://eventstore.com/docs/getting-started/reading-subscribing-events/index.html?tabs=tabid-6%2Ctabid-dotnet-client%2Ctabid-10%2Ctabid-create-sub-dotnet#subscription-types) that could be used in this case depending on the use case.
 
 ### How would this service be accessed and used from an external client from the cluster?
 
