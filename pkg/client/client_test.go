@@ -113,5 +113,31 @@ var _ = Describe("Client", func() {
 				Expect(err).ShouldNot(HaveOccurred())
 			})
 		})
+
+		Context("When calling on function NewRequest", func() {
+
+			JustBeforeEach(func() {
+				mockCalcClient.EXPECT().GetSum(gomock.Any(), gomock.Any()).Return(&protos.SumResponse{Result: 2}, nil)
+				operation := "sum"
+				err = client.NewRequest(operation, mockCalcClient, args)
+			})
+
+			It("it returns an AverageResponse", func() {
+				Expect(err).ShouldNot(HaveOccurred())
+			})
+		})
+
+		Context("When calling on function NewRequest", func() {
+
+			JustBeforeEach(func() {
+				mockCalcClient.EXPECT().GetAverage(gomock.Any(), gomock.Any()).Return(&protos.AverageResponse{Result: 2}, nil)
+				operation := "average"
+				err = client.NewRequest(operation, mockCalcClient, args)
+			})
+
+			It("it returns an AverageResponse", func() {
+				Expect(err).ShouldNot(HaveOccurred())
+			})
+		})
 	})
 })

@@ -24,6 +24,24 @@ func ParseArguments(args []string) (string, error) {
 	return operation, nil
 }
 
+// NewRequest filters the new requests by operation and returns their response.
+func NewRequest(operation string, client protos.CalculatorClient, args []string) error {
+	if operation == "sum" {
+		response, err := PrintSum(client, args)
+		if err != nil {
+			return err
+		}
+		fmt.Println(response)
+	} else {
+		response, err := PrintAverage(client, args)
+		if err != nil {
+			return err
+		}
+		fmt.Println(response)
+	}
+	return nil
+}
+
 // PrintSum receives a type CalculatorClient and command-line arguments to create an SumRequest then log the SumResponse.
 func PrintSum(client protos.CalculatorClient, args []string) (*calculator.SumResponse, error) {
 
