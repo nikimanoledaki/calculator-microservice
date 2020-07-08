@@ -2,8 +2,8 @@ package client_test
 
 import (
 	"github.com/golang/mock/gomock"
-	calc_mock "github.com/nikimanoledaki/calculator-microservice/mock/calculator"
 	"github.com/nikimanoledaki/calculator-microservice/pkg/client"
+	calc_mock "github.com/nikimanoledaki/calculator-microservice/pkg/client/mock"
 	protos "github.com/nikimanoledaki/calculator-microservice/protos/calculator"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
