@@ -31,5 +31,6 @@ steps:
     commands:
       - "go get github.com/onsi/ginkgo/ginkgo"
       - "go get github.com/onsi/gomega/..."
+      - "go get github.com/golang/mock/mockgen"
       - "ginkgo -r"
     stage: "test"
