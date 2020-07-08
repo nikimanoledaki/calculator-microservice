@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/nikimanoledaki/calculator-microservice/protos/calculator"
 	protos "github.com/nikimanoledaki/calculator-microservice/protos/calculator"
 )
 
@@ -24,8 +25,8 @@ func ParseArguments(args []string) (string, error) {
 	return operation, nil
 }
 
-// PrintSum receives a type CalculatorClient and command-line arguments to create an SumRequest then log the AverageResponse.
-func PrintSum(client protos.CalculatorClient, args []string) {
+// PrintSum receives a type CalculatorClient and command-line arguments to create an SumRequest then log the SumResponse.
+func PrintSum(client protos.CalculatorClient, args []string) (*calculator.SumResponse, error) {
 
 	numbers := make([]int32, 2)
 	for i, arg := range args {
@@ -41,13 +42,7 @@ func PrintSum(client protos.CalculatorClient, args []string) {
 		SecondNumber: numbers[1],
 	}
 
-	response, err := client.GetSum(context.Background(), sumReq)
-	if err != nil {
-		log.Fatalf("%v.GetSum() = _, %v: ", client, err)
-		os.Exit(1)
-	}
-
-	log.Println(response)
+	return client.GetSum(context.Background(), sumReq)
 }
 
 // PrintAverage receives a type CalculatorClient and command-line arguments to create an AverageRequest then log the AverageResponse.

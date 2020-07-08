@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -23,9 +24,17 @@ func main() {
 
 	clientService := protos.NewCalculatorClient(conn)
 
+	var response *protos.SumResponse
 	if operation == "sum" {
-		client.PrintSum(clientService, os.Args[2:])
-	} else {
-		client.PrintAverage(clientService, os.Args[2:])
+		response, err = client.PrintSum(clientService, os.Args[2:])
 	}
+	// else {
+	// 	fmt.Println(client.PrintAverage(clientService, os.Args[2:]))
+	// }
+	if err != nil {
+		log.Fatalf("%v.GetAverage() = _, %v: ", clientService, err)
+		os.Exit(1)
+	}
+
+	fmt.Println(response)
 }
