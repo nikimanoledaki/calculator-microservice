@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 	"strconv"
 
 	"github.com/nikimanoledaki/calculator-microservice/protos/calculator"
@@ -46,7 +45,7 @@ func PrintSum(client protos.CalculatorClient, args []string) (*calculator.SumRes
 }
 
 // PrintAverage receives a type CalculatorClient and command-line arguments to create an AverageRequest then log the AverageResponse.
-func PrintAverage(client protos.CalculatorClient, args []string) {
+func PrintAverage(client protos.CalculatorClient, args []string) (*calculator.AverageResponse, error) {
 	numbers := make([]float32, 2)
 	for i, arg := range args {
 		number, err := strconv.ParseFloat(arg, 32)
@@ -61,11 +60,5 @@ func PrintAverage(client protos.CalculatorClient, args []string) {
 		SecondNumber: numbers[1],
 	}
 
-	response, err := client.GetAverage(context.Background(), avgReq)
-	if err != nil {
-		log.Fatalf("%v.GetAverage() = _, %v: ", client, err)
-		os.Exit(1)
-	}
-
-	log.Println(response)
+	return client.GetAverage(context.Background(), avgReq)
 }
