@@ -14,7 +14,6 @@ var _ = Describe("Server", func() {
 
 	var (
 		cs     *server.CalculatorServer
-		cs2    *server.CalculatorServer
 		logger hclog.Logger
 	)
 
@@ -26,6 +25,7 @@ var _ = Describe("Server", func() {
 	Context("Function NewComputation", func() {
 
 		It("returns the operator and no error", func() {
+			var cs2 *server.CalculatorServer
 			cs2 = new(server.CalculatorServer)
 			Expect(cs).Should(BeAssignableToTypeOf(cs2))
 		})

@@ -79,18 +79,16 @@ var _ = Describe("Client", func() {
 		Context("When passing a SumRequest and CalculatorClient to function PrintSum", func() {
 
 			var (
-				response  *protos.SumResponse
-				response2 *protos.SumResponse
+				response *protos.SumResponse
 			)
 
 			JustBeforeEach(func() {
 				mockCalcClient.EXPECT().GetSum(gomock.Any(), gomock.Any()).Return(&protos.SumResponse{Result: 3}, nil)
 				response, err = client.PrintSum(mockCalcClient, args)
-				response2 = new(protos.SumResponse)
 			})
 
 			It("it returns a SumResponse", func() {
-				Expect(response).Should(BeAssignableToTypeOf(response2))
+				Expect(response.Result).Should(BeNumerically("==", 3))
 				Expect(err).ShouldNot(HaveOccurred())
 			})
 		})
@@ -98,18 +96,16 @@ var _ = Describe("Client", func() {
 		Context("When passing an AverageRequest and CalculatorClient to function PrintAverage", func() {
 
 			var (
-				response  *protos.AverageResponse
-				response2 *protos.AverageResponse
+				response *protos.AverageResponse
 			)
 
 			JustBeforeEach(func() {
-				mockCalcClient.EXPECT().GetAverage(gomock.Any(), gomock.Any()).Return(&protos.AverageResponse{Result: 2}, nil)
+				mockCalcClient.EXPECT().GetAverage(gomock.Any(), gomock.Any()).Return(&protos.AverageResponse{Result: 1.5}, nil)
 				response, err = client.PrintAverage(mockCalcClient, args)
-				response2 = new(protos.AverageResponse)
 			})
 
 			It("it returns an AverageResponse", func() {
-				Expect(response).Should(BeAssignableToTypeOf(response2))
+				Expect(response.Result).Should(BeNumerically("==", 1.5))
 				Expect(err).ShouldNot(HaveOccurred())
 			})
 		})
@@ -117,8 +113,8 @@ var _ = Describe("Client", func() {
 		Context("When calling on function NewRequest", func() {
 
 			JustBeforeEach(func() {
-				mockCalcClient.EXPECT().GetSum(gomock.Any(), gomock.Any()).Return(&protos.SumResponse{Result: 2}, nil)
-				operation := "sum"
+				mockCalcClient.EXPECT().GetSum(gomock.Any(), gomock.Any()).Return(&protos.SumResponse{Result: 3}, nil)
+				operation = "sum"
 				err = client.NewRequest(operation, mockCalcClient, args)
 			})
 
@@ -130,8 +126,8 @@ var _ = Describe("Client", func() {
 		Context("When calling on function NewRequest", func() {
 
 			JustBeforeEach(func() {
-				mockCalcClient.EXPECT().GetAverage(gomock.Any(), gomock.Any()).Return(&protos.AverageResponse{Result: 2}, nil)
-				operation := "average"
+				mockCalcClient.EXPECT().GetAverage(gomock.Any(), gomock.Any()).Return(&protos.AverageResponse{Result: 1.5}, nil)
+				operation = "average"
 				err = client.NewRequest(operation, mockCalcClient, args)
 			})
 
