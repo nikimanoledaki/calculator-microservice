@@ -29,7 +29,7 @@ func main() {
 
 	l, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {
-		log.Error("Failed to listen to port 9092", "error", err)
+		log.Error("Failed to listen to port %d", "error", port, err)
 		os.Exit(1)
 	}
 
