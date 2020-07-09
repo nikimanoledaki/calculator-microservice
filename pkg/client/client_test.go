@@ -19,13 +19,13 @@ var _ = Describe("Client", func() {
 	var _ = Describe("Function ParseArguments", func() {
 
 		JustBeforeEach(func() {
-			operation, err = client.ParseArguments(args)
+			operation, _, err = client.ParseArguments(args)
 		})
 
 		Context("If operator is not `sum` or `average`", func() {
 
 			BeforeEach(func() {
-				args = []string{"./client", "multiply", "1", "2"}
+				args = []string{"multiply", "1", "2"}
 			})
 
 			It("returns an error saying the operation is not recognized", func() {
@@ -34,10 +34,10 @@ var _ = Describe("Client", func() {
 			})
 		})
 
-		Context("If the arguments are not the binary, an operator, and two digits", func() {
+		Context("If the arguments are not an operator with two digits", func() {
 
 			BeforeEach(func() {
-				args = []string{"./client", "sum", "1", "2", "3"}
+				args = []string{"sum", "1", "2", "3"}
 			})
 
 			It("it returns an error", func() {
@@ -49,7 +49,7 @@ var _ = Describe("Client", func() {
 		Context("If there is a client, an operator, and two digits", func() {
 
 			BeforeEach(func() {
-				args = []string{"./client", "sum", "1", "2"}
+				args = []string{"sum", "1", "2"}
 			})
 
 			It("returns no error and the operator", func() {

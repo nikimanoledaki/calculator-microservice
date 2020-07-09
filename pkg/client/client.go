@@ -11,17 +11,19 @@ import (
 )
 
 // ParseArguments manages the error handling for the unhappy paths of the client.
-func ParseArguments(args []string) (string, error) {
-	if len(args) != 4 {
-		return "", fmt.Errorf("expected 'sum' or 'average' with 2 numeric values")
+func ParseArguments(args []string) (string, []string, error) {
+	if len(args) != 3 {
+		return "", args, fmt.Errorf("expected 'sum' or 'average' with 2 numeric values")
 	}
 
-	operation := args[1]
+	operation := args[0]
 	if operation != "sum" && operation != "average" {
-		return "", fmt.Errorf("operation not recognized")
+		return "", args, fmt.Errorf("operation not recognized")
 	}
 
-	return operation, nil
+	numbers := args[1:]
+
+	return operation, numbers, nil
 }
 
 // NewRequest filters the new requests by operation and returns their response.
