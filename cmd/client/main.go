@@ -17,12 +17,12 @@ func main() {
 
 	operation, numbers, err := client.ParseArguments(flag.Args())
 	if err != nil {
-		log.Fatalf("Error when parsing arguments: %s", err)
+		log.Fatalf("Failed to parse arguments: %s", err)
 	}
 
 	conn, err := grpc.Dial(port, grpc.WithInsecure())
 	if err != nil {
-		log.Fatalf("Failed to connect to port 9092: %s", err)
+		log.Fatalf("Failed to connect to port %s: %s", port, err)
 	}
 	defer conn.Close()
 
@@ -30,7 +30,7 @@ func main() {
 
 	err = client.NewRequest(operation, clientService, numbers)
 	if err != nil {
-		log.Fatalf("Failed to call %v on %v: %s", operation, clientService, err)
+		log.Fatalf("Failed to perform operation %v: %s", operation, err)
 		os.Exit(1)
 	}
 
