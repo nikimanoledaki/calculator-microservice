@@ -1,6 +1,8 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"net"
 	"os"
 
@@ -21,7 +23,11 @@ func main() {
 
 	reflection.Register(grpcServer)
 
-	l, err := net.Listen("tcp", ":9092")
+	var port int
+	flag.IntVar(&port, "p", 9092, "Specify port to use. Defaults to 9092.")
+	flag.Parse()
+
+	l, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {
 		log.Error("Failed to listen to port 9092", "error", err)
 		os.Exit(1)
