@@ -17,5 +17,11 @@ spec:
       containers:
         - name: calculator
           image: niki2401/calculator-microservice:latest
+          env:
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: calculator-config
+                  key: port
           ports:
-            - containerPort: 9092
+            - containerPort: 9000

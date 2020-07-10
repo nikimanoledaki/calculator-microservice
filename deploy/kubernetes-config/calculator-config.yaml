@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: CongifMap
+metadata:
+  name: calculator-config
+  namespace: default
+data:
+  port: 9000

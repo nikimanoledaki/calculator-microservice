@@ -27,6 +27,12 @@ docker pull niki2401/calculator-microservice
 docker run -d -p 9092:9092  niki2401/calculator-microservice
 ```
 
+Specifying a different port for the container to listen to is also possible. This can be done by passing a value for the environment variable `$PORT`.
+
+```
+docker run -p 9000:9000 -e "PORT=9092" niki2401/calculator-microservice
+```
+
 If for some reason this does not work for you, you can also run the server locally.
 
 ```
