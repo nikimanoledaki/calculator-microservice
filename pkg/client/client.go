@@ -4,28 +4,48 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 	"strconv"
 
+	"github.com/nikimanoledaki/calculator-microservice/protos/calculator"
 	protos "github.com/nikimanoledaki/calculator-microservice/protos/calculator"
 )
 
 // ParseArguments manages the error handling for the unhappy paths of the client.
-func ParseArguments(args []string) (string, error) {
-	if len(args) != 4 {
-		return "", fmt.Errorf("expected 'sum' or 'average' with 2 numeric values")
+func ParseArguments(args []string) (string, []string, error) {
+	if len(args) != 3 {
+		return "", args, fmt.Errorf("expected 'sum' or 'average' with 2 numeric values")
 	}
 
-	operation := args[1]
+	operation := args[0]
 	if operation != "sum" && operation != "average" {
-		return "", fmt.Errorf("operation not recognized")
+		return "", args, fmt.Errorf("operation not recognized")
 	}
 
-	return operation, nil
+	numbers := args[1:]
+
+	return operation, numbers, nil
 }
 
-// PrintSum receives a type CalculatorClient and command-line arguments to create an SumRequest then log the AverageResponse.
-func PrintSum(client protos.CalculatorClient, args []string) {
+// NewRequest filters the new requests by operation and returns their response.
+func NewRequest(operation string, client protos.CalculatorClient, args []string) error {
+	if operation == "sum" {
+		response, err := PrintSum(client, args)
+		if err != nil {
+			return err
+		}
+		fmt.Println(response)
+	} else {
+		response, err := PrintAverage(client, args)
+		if err != nil {
+			return err
+		}
+		fmt.Println(response)
+	}
+	return nil
+}
+
+// PrintSum receives a type CalculatorClient and command-line arguments to create an SumRequest then log the SumResponse.
+func PrintSum(client protos.CalculatorClient, args []string) (*calculator.SumResponse, error) {
 
 	numbers := make([]int32, 2)
 	for i, arg := range args {
@@ -41,17 +61,11 @@ func PrintSum(client protos.CalculatorClient, args []string) {
 		SecondNumber: numbers[1],
 	}
 
-	response, err := client.GetSum(context.Background(), sumReq)
-	if err != nil {
-		log.Fatalf("%v.GetSum() = _, %v: ", client, err)
-		os.Exit(1)
-	}
-
-	log.Println(response)
+	return client.GetSum(context.Background(), sumReq)
 }
 
 // PrintAverage receives a type CalculatorClient and command-line arguments to create an AverageRequest then log the AverageResponse.
-func PrintAverage(client protos.CalculatorClient, args []string) {
+func PrintAverage(client protos.CalculatorClient, args []string) (*calculator.AverageResponse, error) {
 	numbers := make([]float32, 2)
 	for i, arg := range args {
 		number, err := strconv.ParseFloat(arg, 32)
@@ -66,11 +80,5 @@ func PrintAverage(client protos.CalculatorClient, args []string) {
 		SecondNumber: numbers[1],
 	}
 
-	response, err := client.GetAverage(context.Background(), avgReq)
-	if err != nil {
-		log.Fatalf("%v.GetAverage() = _, %v: ", client, err)
-		os.Exit(1)
-	}
-
-	log.Println(response)
+	return client.GetAverage(context.Background(), avgReq)
 }

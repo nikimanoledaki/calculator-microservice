@@ -29,7 +29,7 @@ steps:
     image: "${{MyAppDockerImage}}"
     working_directory: "${{clone}}"
     commands:
-      - "go get github.com/onsi/ginkgo/ginkgo"
+      - "go get github.com/onsi/ginkgo/ginkgo@v1.13.0"
       - "go get github.com/onsi/gomega/..."
-      - "ginkgo -r test"
+      - "ginkgo -r"
     stage: "test"

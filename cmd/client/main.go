@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"os"
 
@@ -10,22 +11,27 @@ import (
 )
 
 func main() {
-	operation, err := client.ParseArguments(os.Args)
+	var port string
+	flag.StringVar(&port, "p", "localhost:9092", "Specify port to use. Defaults to localhost:9092.")
+	flag.Parse()
+
+	operation, numbers, err := client.ParseArguments(flag.Args())
 	if err != nil {
-		log.Fatalf("Error when parsing arguments: %s", err)
+		log.Fatalf("Failed to parse arguments: %s", err)
 	}
 
-	conn, err := grpc.Dial("localhost:9092", grpc.WithInsecure())
+	conn, err := grpc.Dial(port, grpc.WithInsecure())
 	if err != nil {
-		log.Fatalf("Failed to connect to port 9092: %s", err)
+		log.Fatalf("Failed to connect to port %s: %s", port, err)
 	}
 	defer conn.Close()
 
 	clientService := protos.NewCalculatorClient(conn)
 
-	if operation == "sum" {
-		client.PrintSum(clientService, os.Args[2:])
-	} else {
-		client.PrintAverage(clientService, os.Args[2:])
+	err = client.NewRequest(operation, clientService, numbers)
+	if err != nil {
+		log.Fatalf("Failed to perform operation %v: %s", operation, err)
+		os.Exit(1)
 	}
+
 }
