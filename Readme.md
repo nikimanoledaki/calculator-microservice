@@ -63,11 +63,14 @@ To run the tests, you will need to have `Ginkgo` and `Gomega`, which can be inst
  go get github.com/onsi/gomega/...
 ```
 
-The tests are located in the `Test` folder and can be run with the following command.
+The tests can be run with the following command.
 
 ```
-ginkgo -r test
+ginkgo -r
+ginkgo -r -cover // Add the -cover flag to run the tests with Go's code coverage tool.
 ```
+
+Lastly, `GoMock` was used to generate a mock server interface to mock the gRPC calls for the client tests.
 
 #### Feature tests
 
